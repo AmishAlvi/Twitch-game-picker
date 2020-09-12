@@ -6,8 +6,9 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 2) Create a .env file and define the following environment variables:
 
-    REACT_APP_CLIENT_ID=<your client id>
-    REACT_APP_CLIENT_SECRET=<your client secret>
+    REACT_APP_CLIENT_ID= "your client id"
+
+    REACT_APP_CLIENT_SECRET= "your client secret"
 
 3) In the project drectory run:
 
