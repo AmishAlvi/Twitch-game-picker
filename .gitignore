@@ -22,7 +22,7 @@
 .env.production.local
 
 # firebase
-.firebaseserc
+.firebaserc
 firebase.json
 
 npm-debug.log*
