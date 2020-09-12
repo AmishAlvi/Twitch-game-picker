@@ -11,11 +11,11 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 3) In the project drectory run:
 
-### 'npm install'
+### `npm install`
 
 4) Run the application with:
 
-### 'npm start'
+### `npm start`
 
 Hope this helps 😊
 
