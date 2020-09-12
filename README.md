@@ -2,13 +2,22 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## To run code:
 
-In the project drectory run:
+1) Create an application on twitch and get a client-id and client secret
+
+2) Create a .env file and define the following environment variables:
+
+    REACT_APP_CLIENT_ID=<your client id>
+    REACT_APP_CLIENT_SECRET=<your client secret>
+
+3) In the project drectory run:
 
 ### 'npm install'
 
-followed by 
+4) Run the application with:
 
 ### 'npm start'
+
+Hope this helps 😊
 
 ## Available Scripts
 
