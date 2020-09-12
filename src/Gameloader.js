@@ -7,7 +7,6 @@ import { Button } from 'react-bootstrap'
 // defining twitch client secret and id for fetch requests
 const clientId = process.env.REACT_APP_CLIENT_ID;
 const clientSecret = process.env.REACT_APP_CLIENT_SECRET;
-console.log(process.env.REACT_APP_CLIENT_SECRET)
 
 
 //initial laoding component for fetching and validating games on initial load
