@@ -24,7 +24,7 @@ class GamePicker extends Component{
     games = this.props.validgames // gains access to validated list of live games 
     ten_game = [] // array to keep track of games use will be top ten in
 
-    //sets average viewers to sue submitted value
+    //sets average viewers to user submitted value
     handleChange(event) {
         this.setState({
             average_viewers: event.target.value,
@@ -42,39 +42,47 @@ class GamePicker extends Component{
             isLoaded: true
         });
         event.preventDefault(); // prevent page from reloading on form submission
-        var games_url = new URL('https://api.twitch.tv/kraken/streams/')
-        
-
-        for(var m = 0; m < this.games.length; m++) // iterating over eeach valid game using "m" to fetch data fro individual games
+        var games_url = new URL('https://api.twitch.tv/helix/streams/')
+        // this.games.length
+        for(var m = 0; m < this.games.length; m++) // iterating over each valid game using "m" to fetch data for individual games
         {
+            //console.log(this.games[m].id)
+
             this.setState({
                 queries: (this.games.length - m) // tracking the number of games queried to be shopwn to user
             })
 
             // this next code block defines params and fetches the top ten streams for the current game "m"
-            var params = {game: this.games[m].game.name, limit: 10}
+            var params = {game_id: this.games[m].id, first: 20}
             games_url.search = new URLSearchParams(params).toString();
             await fetch(games_url, {
     
                 method: 'GET',
                 headers: {
                     Accept: 'application/vnd.twitchtv.v5+json',
-                    //Authorization: 'Bearer {this.access_info.access_token}',
+                    Authorization: `Bearer ${this.access_info.access_token}`,
                     'Client-ID': clientId
                 }
             })
             .then(res => res.json())
             //after fetching the top ten streams this code block compares the view count of the 10th stream to the users average view count
             .then(json => {
-                if(this.state.average_viewers > Number(json.streams[json.streams.length - 1].viewers)) 
+                //console.log(json)
+                if(Number(json.data.length > 19))
                 {
-                    this.ten_game.push(this.games[m])
+                    if(this.state.average_viewers > Number(json.data[9].viewer_count)) 
+                    {
+                        
+                        this.ten_game.push(this.games[m])
+                    }
                 }
             }).catch((err) => {
                 console.log(err);
             })
             
         }
+
+        console.log(this.ten_game)
         
         // confirming that the final list has been calculated and can now be renderd
         this.setState({
@@ -121,16 +129,17 @@ class GamePicker extends Component{
                         <tr>
                             <td><h3>Box</h3></td>
                             <td><h3>Game</h3></td>
-                            <td><h3>Total Viewers</h3></td>
-                            <td><h3>Total Channels</h3></td>
+                            {/* <td><h3>Total Viewers</h3></td>
+                            <td><h3>Total Channels</h3></td> */}
                         </tr>
                     {this.ten_game.map(value => { //mapping values from the final games list and rendering them one by one in the table
                         return(
+                                
                                 <tr>   
-                                    <td><a href={'https://twitch.tv/directory/game/' + value.game.name} target='_blank'><img src={value.game.box.small} /></a></td>
-                                    <td><a href={'https://twitch.tv/directory/game/' + value.game.name} target='_blank'>{value.game.name}</a></td>
-                                    <td>{value.viewers}</td>
-                                    <td>{value.channels}</td>
+                                    <td><a href={'https://twitch.tv/directory/game/' + value.name} target='_blank'><img src={value.box_art_url.split('-{')[0]+'-138x190.jpg'} /></a></td>
+                                    <td><a href={'https://twitch.tv/directory/game/' + value.name} target='_blank'>{value.name}</a></td>
+                                    {/* <td>{value.viewers}</td>
+                                    <td>{value.channels}</td> */}
                                 </tr>
                             
                         )

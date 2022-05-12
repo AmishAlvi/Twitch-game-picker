@@ -7,6 +7,7 @@ import { Button } from 'react-bootstrap'
 // defining twitch client secret and id for fetch requests
 const clientId = process.env.REACT_APP_CLIENT_ID;
 const clientSecret = process.env.REACT_APP_CLIENT_SECRET;
+//console.log("client id: " , process.env.REACT_APP_CLIENT_ID)
 
 
 //initial laoding component for fetching and validating games on initial load
@@ -26,7 +27,7 @@ class Gameloader extends Component {
           access_info: [],
           isLoaded: false,
           games: [],
-          loadedGames: 1100
+          loadedGames: 500
       }
 
      
@@ -35,7 +36,6 @@ class Gameloader extends Component {
 
 
   games_array = []  // array of validated games (i.e games over 20 streamers in em)
-  
   async componentDidMount() {
 
     // fetching OAuth token from twitch and assigning to reusable state
@@ -60,34 +60,36 @@ class Gameloader extends Component {
     ** Once verified the games that meet the requirements are added into 
     ** games_array
     */
-    var url = new URL('https://api.twitch.tv/kraken/games/top')
-    for(var i = 0; i < 1100; i += 100)
+    var url = new URL('https://api.twitch.tv/helix/games/top')
+    var cursor = ''
+    for(var i = 0; i < 5; i += 1)
     {
-        var params = {offset: i, limit: 100}
+        var params = {after: cursor, first: 100}
         url.search = new URLSearchParams(params).toString();
         await fetch(url, {
             method: 'GET',
             headers: {
-                Accept: 'application/vnd.twitchtv.v5+json',
-                Authorization: 'Bearer {this.access_info.access_token}',
+                Authorization: `Bearer ${this.state.access_info.access_token}`,
                 'Client-ID': clientId
             }
         })
         .then(res => res.json())
         .then(json => {
+            //console.log(json.data[1])
+            cursor = json.pagination.cursor
            
-                for(var k = 0; k < json.top.length; k++)
+                for(var k = 0; k < json.data.length; k++)
                 {
-                    if(Number(json.top[k].channels) > 20)
-                    {
-                        this.setState({
-                            loadedGames: 1100 - i
-                        })
+                    // if(Number(json.top[k].channels) > 20)
+                    // {
+                    //     this.setState({
+                    //         loadedGames: 1100 - i
+                    //     })
 
-                        this.games_array.push(json.top[k])
-                        //console.log(this.games_array[k].game.name)
-                        
-                    }
+                        this.games_array.push(json.data[k])
+                        this.setState({
+                                loadedGames: 500 - (i*100)
+                            })
                 }
 
                 
@@ -104,14 +106,12 @@ class Gameloader extends Component {
         isLoaded: true, 
         games: this.games_array
     })
-
-    //console.log(this.games_array)
     
   }
 
     // twitch and donate buttons on home page
     btnClickDonate() {
-        window.open("https://streamelements.com/twinkietalks/tip");
+        window.open("https://www.patreon.com/twinkietalks");
     }   
     btnClickTwitch() {
         window.open("https://twitch.tv/twinkietalks");
@@ -148,7 +148,8 @@ class Gameloader extends Component {
             </ul>
 
             <p> You can use this info to get get a good position and grow! <span role="img">😄</span> </p>
-            <p>If you find this application helpful consider <Button variant="info"  onClick={this.btnClickDonate.bind(this)}>Donating</Button> and Follow me on <Button onClick={this.btnClickTwitch.bind(this)}> Twitch </Button> </p>
+            <p>If you find this application helpful consider Becoming a Patron <Button variant="danger"  onClick={this.btnClickDonate.bind(this)}>Patreon</Button> </p>
+            <p>and Follow me on <Button onClick={this.btnClickTwitch.bind(this)}> Twitch </Button> </p>
             <GamePicker {...props} />    
         </div>
     )
