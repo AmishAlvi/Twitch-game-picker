@@ -23,6 +23,7 @@
 
 # firebase
 .firebaserc
+.github
 firebase.json
 
 npm-debug.log*
